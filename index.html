@@ -1,0 +1,222 @@
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">google.load("jquery", "1.3.2");</script>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./resources/style.css" media="screen"/>
+
+<html lang="en">
+<head>
+	<title>Can Visual Foundation Models Achieve Long-term Point Tracking?</title>
+	<meta property="og:image" content="Path to my teaser.jpg"/>
+	<meta property="og:title" content="FoMo_PT" />
+	<meta property="og:description" content="FoMo_PT" />
+    <meta property="twitter:card"          content="FoMo_PT" />
+    <meta property="twitter:title"         content="FoMo_PT" />
+    <meta property="twitter:description"   content="FoMo_PT" />
+    <meta property="twitter:image"         content="Path to my teaser.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Add your Google Analytics tag here -->
+    <script async
+            src="https://www.googletagmanager.com/gtag/js?id=UA-97476543-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-97476543-1');
+    </script>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="title">
+      Can Visual Foundation Models <br> Achieve Long-term Point Tracking?
+    </div>
+
+
+    <br><br>
+    <div class="author">
+        <a href="https://gorkaydemir.github.io" target="_blank">Gorkay Aydemir</a><sup>1</sup>
+    </div>
+    <div class="author">
+        <a href="https://weidixie.github.io" target="_blank">Weidi Xie</a><sup>3, 4</sup>
+    </div>
+    <div class="author">
+        <a href="https://mysite.ku.edu.tr/fguney/" target="_blank">Fatma Guney</a><sup>1, 2</sup>
+    </div>
+
+    <br><br>
+    <div class="affiliation"><sup>1&nbsp;</sup><a href="https://cs.ku.edu.tr" target="_blank">Department of Computer Engineering, Koc University</a></div>
+    <div class="affiliation"><sup>2&nbsp;</sup><a href="https://ai.ku.edu.tr" target="_blank">KUIS AI Center</a></div>
+    <div class="affiliation"><sup>3&nbsp;</sup><a href="https://en.sjtu.edu.cn" target="_blank">CMIC, Shanghai Jiao Tong University</a></div>
+    <div class="affiliation"><sup>4&nbsp;</sup><a href="https://www.shlab.org.cn" target="_blank">Shanghai AI Laboratory</a></div>
+    <br>
+    
+    <div class="venue">
+      <a href="https://sites.google.com/view/eval-fomo-24/home" style="color: #000000" target="_blank"> <b>EVAL-FoMo Workshop</b></a> <br>
+      <b>ECCV 2024</b>
+    </div>
+    <br><br>
+
+
+    <div class="links">Paper <a href="https://arxiv.org/abs/2408.13575" target="_blank"> [arXiv]</a></div>
+
+    <br>
+
+    <br>
+    <div class="box"><b> <FONT COLOR="RED">TL;DR</FONT></b> We assess the geometric awareness of vision foundation models for long-term point tracking. Our results show that Stable Diffusion and DINOv2 excel in zero-shot settings, with DINOv2 matching supervised models after training in lighter setup, highlighting its potential for correspondence learning. </div>
+    <br>
+    <br>
+    <br>
+  
+    <br>
+
+    <div class="row">
+      <div class="cropped">
+        <img style="width: 80%;" src="./resources/gifs/dinov2_video15.gif" loop=infinite/>
+      </div>
+      <div class="cropped">
+        <img style="width: 80%;" src="./resources/gifs/dinov2_reg_video15.gif" loop=infinite/>
+      </div>
+      <div class="cropped">
+        <img style="width: 80%;" src="./resources/gifs/sd_video15.gif" loop=infinite/>
+      </div>
+      <div class="cropped">
+        <img style="width: 80%;" src="./resources/gifs/sam_video15.gif" loop=infinite/>
+      </div>
+    </div>
+
+    <p style="width: 80%;">
+      <b> Zero-shot point tracking on TAP-Vid DAVIS.</b> Predictions are indicated by <FONT COLOR="RED">red stars</FONT></b>, representing the most similar locations, while ground truth correspondences are shown as <FONT COLOR="BLUE"> blue stars</FONT></b>.
+        
+    </p>
+
+    <br>
+
+    <br>
+    <hr>
+
+    <h1>Abstract</h1>
+    <p style="width: 80%;">
+      Large-scale vision foundation models have demonstrated remarkable success across various tasks, underscoring their robust generalization capabilities. 
+      While their proficiency in two-view correspondence has been explored, their effectiveness in long-term correspondence within complex environments remains unexplored. 
+      To address this, we evaluate the geometric awareness of visual foundation models in the context of point tracking: <br>
+      (i) in <b>zero-shot</b> settings, without any training; <br>
+      (ii) by <b>probing</b> with low-capacity layers; <br>
+      (iii) by fine-tuning with <b>Low Rank Adaptation</b> (LoRA). <br>
+      Our findings indicate that features from Stable Diffusion and DINOv2 exhibit superior geometric correspondence abilities in zero-shot settings. 
+      Furthermore, DINOv2 achieves performance comparable to supervised models in adaptation settings, demonstrating its potential as a strong initialization for correspondence learning.
+    </p>
+
+    <br><br>
+    <hr>
+
+    <h1>Methodology</h1>
+    <img style="width: 60%;" src="./resources/correlation_map.png"
+         alt="Correlation Map figure"/>
+    <br><br>
+    <p style="width: 80%;">
+      We leverage correlation maps, specifically cosine similarity between the query and target view features, to establish correspondences between two views: <br>
+      &emsp; &emsp; <b>(i) Zero-Shot:</b> We assess the geometric awareness of the encoders by selecting the most similar location from the correlation map. <br>
+      &emsp; &emsp; <b>(ii) Probing:</b> We perform probing by training low-capacity layers on the correlation map, computed from a frozen backbone, akin to linear probing. <br>
+      &emsp; &emsp; <b>(iii) Adaptation:</b> We fine-tune the model using Low Rank Adaptation (LoRA) to evaluate its effectiveness as an initialization method. <br>
+    </p>
+    
+    
+    <br>
+
+    <hr>
+
+    <h1>Quantitative Results</h1>
+
+    <!-- <img style="width: 38%;" src="./resources/movi_table.png" alt="MOVi-E SOTA"/><br><br>
+    <p style="width: 80%;">
+      <b>Quantitative Results on MOVi-E.</b> This table shows results in comparison to the previous work in terms of FG-ARI on MOVi-E.
+    </p>
+    <br><br>
+
+    <img style="width: 74%;" src="./resources/ytvis_table.png" alt="Interaction SOTA"/><br><br>
+    <p style="width: 80%;">
+      <b>Quantitative Results on Real-World Data.</b> These results show the video multi-object evaluation results on the validation split of DAVIS17 and a subset of the YTVIS19 train split.
+    </p> -->
+
+
+    <div class="row_v2">
+      <img class="img-center" style="width: 47%;" src="./resources/zero_shot.png" alt="Adaptation"/><br><br>
+      <img class="img-center" style="width: 5%;"><br><br>
+      <img class="img-center" style="width: 45%;height: 70%;" src="./resources/adaptation.png" alt="Zero-shot"/><br><br>
+    </div>
+
+    <br>
+
+    <div class="row">
+      <p style="width:47%;">
+        <b>Zero-Shot Evaluation.</b> These results show the zero-shot evaluation results on the TAP-Vid datasets. Stable Diffusion exhibit superior geometric correspondence abilities in zero-shot settings on average.
+      </p>
+
+      <p style="width: 5%;"> </p>
+      
+      <p style="width: 45%;">
+        <b>Probing and Adapting DINOv2.</b> This table shows different setups for DINOv2 on the TAP-Vid DAVIS, including the number of learnable parameters. The setups include zero-shot, probing, and adaptation with various LoRA ranks. DINOv2 achieves better performance tahn supervised models under lighter training setup.
+      </p>
+    </div>
+
+    <br>
+
+    <hr>
+
+    <h1>Qualitative Results</h1>
+
+    <div class="row">
+      <div class="column">
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/dinov2_0.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/dinov2_1.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/dinov2_2.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/dinov2_3.gif"/></div>
+      </div>
+      <div class="column">
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sd_video0.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sd_video1.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sd_video2.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sd_video3.gif"/></div>
+      </div>
+      <div class="column">
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sam_0.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sam_1.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sam_2.gif"/></div>
+        <div class="cropped_v2"><img style="width: 100%;" src="./resources/gifs/sam_3.gif"/></div>
+      </div>
+    </div>
+
+    <p style="width: 80%;">
+      <b> Qualitative results on TAP-Vid DAVIS.</b> These GIFs show the performance of zero-shot point tracking on TAP-Vid DAVIS. Query points from four videos are used to generate correlation map. The models evaluated are Stable Diffusion, DINOv2, and SAM. Predictions are indicated by <FONT COLOR="RED">red stars</FONT></b>, representing the most similar locations, while ground truth correspondences are shown as <FONT COLOR="BLUE">blue stars</FONT></b>. <FONT COLOR="RED">Red lines</FONT></b>, connect them to illustrate the spatial difference, or error, between the ground truth and the prediction. <FONT COLOR=#990000	>Warmer colors</FONT></b> in the correlation maps indicate higher similarity.
+        
+    </p>
+    <hr>
+
+    <h1>Paper</h1>
+
+    <div class="paper-info"style="width: 80%;">
+        <h3>Can Visual Foundation Models Achieve Long-term Point Tracking?</h3>
+        <p>Gorkay Aydemir, Weidi Xie, and Fatma Guney</p>
+
+        <pre><code>
+          @article{aydemir2024can,
+            title={Can Visual Foundation Models Achieve Long-term Point Tracking?},
+            author={Aydemir, G{\"o}rkay and Xie, Weidi and G{\"u}ney, Fatma},
+            journal={arXiv preprint arXiv:2408.13575},
+            year={2024}
+          }
+                </code></pre>
+    </div>
+
+    <br><br>
+
+</div>
+
+</body>
+
+</html>
